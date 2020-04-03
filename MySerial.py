@@ -7,7 +7,7 @@ from PyQt5.QtCore import QTimer
 from Drew import NowFileData, GetFileData
 import pandas as pd
 from MyMainWindow import Ui_MainWindow
-from data_deal import Data_Deal
+from Data_Deal import Data_Deal
 
 
 class Data_App(QWidget, Ui_MainWindow):
@@ -184,11 +184,11 @@ class Data_App(QWidget, Ui_MainWindow):
 
         if self.source_file_flag:
             self.statusBar.showMessage("绘图对象：实时数据，当前文件为 %s" % self.now_file_name)
-            self.temp_chart.drew(self.display_value[1])
-            self.humidity_chart.drew(self.display_value[2])
-            self.speed_chart.drew(self.display_value[3])
-            self.direction_chart.drew(self.display_value[4])
-            self.pressure_chart.drew(self.display_value[6])
+            self.temp_chart.drew(self.display_value[1],self.display_value[0][-5:])
+            self.humidity_chart.drew(self.display_value[2],self.display_value[0][-5:])
+            self.speed_chart.drew(self.display_value[3],self.display_value[0][-5:])
+            self.direction_chart.drew(self.display_value[4],self.display_value[0][-5:])
+            self.pressure_chart.drew(self.display_value[6],self.display_value[0][-5:])
         else:
             self.statusBar.showMessage("绘图对象：选择的文件数据，选择的文件为  %s" % self.get_fileName[0][-12:])
 
@@ -221,24 +221,20 @@ class Data_App(QWidget, Ui_MainWindow):
         self.get_file_data = pd.read_csv(self.get_fileName[0])
         self.source_file_flag = False
         self.statusBar.showMessage("绘图对象：选择的文件数据，选择的文件为  %s" % self.get_fileName[0][-12:])
-        if self.chart_dictionary[1]:
-            for element in self.chart_dictionary:
-                self.chart_dictionary[element].close()
-                self.chart_dictionary[element] = None
         self.create_get_chart()
 
     # 创建实时数据图像对象
     def create_now_chart(self):
         self.temp_chart = NowFileData("温度")
         # 设置纵坐标大小
-        self.temp_chart.plot_plt.setYRange(max=50, min=0)
+        self.temp_chart.plot.setYRange(max=50, min=0)
         self.humidity_chart = NowFileData("湿度")
-        self.humidity_chart.plot_plt.setYRange(max=100, min=0)
+        self.humidity_chart.plot.setYRange(max=100, min=0)
         self.speed_chart = NowFileData("风速")
-        self.speed_chart.plot_plt.setYRange(max=20, min=0)
+        self.speed_chart.plot.setYRange(max=20, min=0)
         self.direction_chart = NowFileData("风向")
         self.pressure_chart = NowFileData("大气压")
-        self.pressure_chart.plot_plt.setYRange(max=1050, min=950)
+        self.pressure_chart.plot.setYRange(max=1050, min=950)
         # 当前显示的窗口
         self.chart_flag = 1
         self.chart_dictionary = {1: self.temp_chart,
@@ -258,81 +254,76 @@ class Data_App(QWidget, Ui_MainWindow):
         self.direction_chart = None
         self.pressure_chart = GetFileData(self.get_file_data, 'Pressure')
         self.pressure_chart.plot.setYRange(max=1050, min=950)
+        # 当前显示的窗口
+        self.chart_flag = 1
+        self.chart_dictionary = {1: self.temp_chart,
+                                 2: self.humidity_chart,
+                                 3: self.speed_chart,
+                                 4: self.direction_chart,
+                                 5: self.pressure_chart}
 
     # 绘制温度图像
     def show_temp_chart(self):
-        if self.source_file_flag:
-            if self.now_file_name:
-                # 获取坐标：前一个图标的坐标
-                new_point = self.chart_dictionary[self.chart_flag].geometry()
-                # 将上一个图像隐藏
-                self.chart_dictionary[self.chart_flag].hide()
-                # 设置这个图像的坐标
-                self.temp_chart.setGeometry(new_point)
-                # 显示这个图像
-                self.temp_chart.show()
-            else:
-                QMessageBox.critical(self, "Show Error", "此刻没有接收数据！")
-            # 更换标志位
-            self.chart_flag = 1
-        else:
-            self.temp_chart.win.show()
+        if self.source_file_flag and not self.now_file_name:
+            QMessageBox.critical(self, "Show Error", "此刻没有接收数据！")
+            return
+        # 获取坐标：前一个图标的坐标
+        new_point = self.chart_dictionary[self.chart_flag].win.geometry()
+        # 将上一个图像隐藏
+        self.chart_dictionary[self.chart_flag].win.hide()
+        # 设置这个图像的坐标
+        self.temp_chart.win.setGeometry(new_point)
+        # 显示这个图像
+        self.temp_chart.win.show()
+        # 更换标志位
+        self.chart_flag = 1
 
     # 绘制湿度图像
     def show_humi_chart(self):
-        if self.source_file_flag:
-            if self.now_file_name:
-                new_point = self.chart_dictionary[self.chart_flag].geometry()
-                self.chart_dictionary[self.chart_flag].hide()
-                self.humidity_chart.setGeometry(new_point)
-                self.humidity_chart.show()
-            else:
-                QMessageBox.critical(self, "Show Error", "此刻没有接收数据！")
-            self.chart_flag = 2
-        else:
-            self.humidity_chart.win.show()
+        if self.source_file_flag and not self.now_file_name:
+            QMessageBox.critical(self, "Show Error", "此刻没有接收数据！")
+            return
+        new_point = self.chart_dictionary[self.chart_flag].win.geometry()
+        self.chart_dictionary[self.chart_flag].win.hide()
+        self.humidity_chart.win.setGeometry(new_point)
+        self.humidity_chart.win.show()
+        self.chart_flag = 2
 
     # 绘制风速图像
     def show_speed_chart(self):
-        if self.source_file_flag:
-            if self.now_file_name:
-                new_point = self.chart_dictionary[self.chart_flag].geometry()
-                self.chart_dictionary[self.chart_flag].hide()
-                self.speed_chart.setGeometry(new_point)
-                self.speed_chart.show()
-            else:
-                QMessageBox.critical(self, "Show Error", "此刻没有接收数据！")
-            self.chart_flag = 3
-        else:
-            self.speed_chart.win.show()
+        if self.source_file_flag and not self.now_file_name:
+            QMessageBox.critical(self, "Show Error", "此刻没有接收数据！")
+            return
+        new_point = self.chart_dictionary[self.chart_flag].win.geometry()
+        self.chart_dictionary[self.chart_flag].win.hide()
+        self.speed_chart.win.setGeometry(new_point)
+        self.speed_chart.win.show()
+        self.chart_flag = 3
+
+    # 绘制大气压图像
+    def show_pressure_chart(self):
+        if self.source_file_flag and not self.now_file_name:
+            QMessageBox.critical(self, "Show Error", "此刻没有接收数据！")
+            return
+        new_point = self.chart_dictionary[self.chart_flag].win.geometry()
+        self.chart_dictionary[self.chart_flag].win.hide()
+        self.pressure_chart.win.setGeometry(new_point)
+        self.pressure_chart.win.show()
+        self.chart_flag = 5
 
     # 绘制风向图像
     def show_direction_chart(self):
         if self.source_file_flag:
             if self.now_file_name:
-                new_point = self.chart_dictionary[self.chart_flag].geometry()
-                self.chart_dictionary[self.chart_flag].hide()
-                self.direction_chart.setGeometry(new_point)
-                self.direction_chart.show()
+                new_point = self.chart_dictionary[self.chart_flag].win.geometry()
+                self.chart_dictionary[self.chart_flag].win.hide()
+                self.direction_chart.win.setGeometry(new_point)
+                self.direction_chart.win.show()
             else:
                 QMessageBox.critical(self, "Show Error", "此刻没有接收数据！")
             self.chart_flag = 4
         else:
-            QMessageBox.information(self, "信息", "选择的文件没有风向变化图像！")
-
-    # 绘制大气压图像
-    def show_pressure_chart(self):
-        if self.source_file_flag:
-            if self.now_file_name:
-                new_point = self.chart_dictionary[self.chart_flag].geometry()
-                self.chart_dictionary[self.chart_flag].hide()
-                self.pressure_chart.setGeometry(new_point)
-                self.pressure_chart.show()
-            else:
-                QMessageBox.critical(self, "Show Error", "此刻没有接收数据！")
-            self.chart_flag = 5
-        else:
-            self.pressure_chart.win.show()
+            QMessageBox.information(self, "信息", "非实时数据，不能绘制风向变化图像！")
 
     # 关闭系统
     def app_close(self):

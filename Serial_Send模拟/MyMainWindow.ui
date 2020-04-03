@@ -13,18 +13,6 @@
     <height>438</height>
    </rect>
   </property>
-  <property name="minimumSize">
-   <size>
-    <width>717</width>
-    <height>438</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>717</width>
-    <height>438</height>
-   </size>
-  </property>
   <property name="font">
    <font>
     <pointsize>11</pointsize>
@@ -936,5 +924,22 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>Button_exit</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>661</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>616</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
