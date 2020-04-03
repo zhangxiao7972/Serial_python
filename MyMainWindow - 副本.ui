@@ -10,8 +10,20 @@
     <x>0</x>
     <y>0</y>
     <width>717</width>
-    <height>410</height>
+    <height>438</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>717</width>
+    <height>438</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>717</width>
+    <height>438</height>
+   </size>
   </property>
   <property name="font">
    <font>
@@ -860,44 +872,69 @@
      </font>
     </property>
    </widget>
-   <widget class="QPushButton" name="Button_next">
-    <property name="geometry">
-     <rect>
-      <x>532</x>
-      <y>370</y>
-      <width>71</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>AcadEref</family>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>选项</string>
-    </property>
-   </widget>
   </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="display_Temp"/>
+   <addaction name="separator"/>
+   <addaction name="display_Humidity"/>
+   <addaction name="separator"/>
+   <addaction name="display_speed"/>
+   <addaction name="separator"/>
+   <addaction name="display_Direction"/>
+   <addaction name="separator"/>
+   <addaction name="display_Pressure"/>
+   <addaction name="separator"/>
+  </widget>
+  <action name="display_Temp">
+   <property name="text">
+    <string>温度图像</string>
+   </property>
+   <property name="toolTip">
+    <string>显示温度数据</string>
+   </property>
+  </action>
+  <action name="display_Humidity">
+   <property name="text">
+    <string>湿度图像</string>
+   </property>
+   <property name="toolTip">
+    <string>显示湿度数据</string>
+   </property>
+  </action>
+  <action name="display_speed">
+   <property name="text">
+    <string>风速图像</string>
+   </property>
+   <property name="toolTip">
+    <string>显示风速数据</string>
+   </property>
+  </action>
+  <action name="display_Direction">
+   <property name="text">
+    <string>风向图像</string>
+   </property>
+   <property name="toolTip">
+    <string>显示风向数据</string>
+   </property>
+  </action>
+  <action name="display_Pressure">
+   <property name="text">
+    <string>大气压图像</string>
+   </property>
+   <property name="toolTip">
+    <string>显示大气压数据</string>
+   </property>
+  </action>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>Button_exit</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>close()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>661</x>
-     <y>370</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>616</x>
-     <y>358</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
